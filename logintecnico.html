@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Login TechFlow - Acesso para Técnicos de Suporte">
+    <meta name="theme-color" content="#00c2ff">
+    <title>TechFlow - Login Técnico</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="logintecnico.css">
+</head>
+<body>
+
+<div class="login-container">
+    <h1>TechFlow</h1>
+    
+    <form id="loginForm" class="login-form" novalidate>
+        
+        <div class="input-group">
+            <label for="username">Utilizador</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username"
+                placeholder="Digite seu utilizador" 
+                required 
+                autocomplete="username"
+                aria-label="Utilizador"
+                aria-required="true">
+        </div>
+        
+        <div class="input-group">
+            <label for="password">Palavra-passe</label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password"
+                placeholder="Digite sua palavra-passe" 
+                required 
+                autocomplete="current-password"
+                aria-label="Palavra-passe"
+                aria-required="true">
+            <i class="bi bi-eye-fill password-toggle" id="togglePassword" role="button" aria-label="Mostrar/Ocultar Senha" tabindex="0"></i>
+        </div>
+
+        <button type="submit" id="btn-login" class="btn-login">
+            <span class="spinner"></span>
+            <span class="btn-text">Entrar</span>
+        </button>
+    </form>
+
+    <div id="error-msg" class="error-msg" role="alert" aria-live="polite"></div>
+    <div id="success-msg" class="success-msg" role="alert" aria-live="polite"></div>
+
+    <div class="switch-link">
+        Você é um aluno? <a href="loginaluno.html">Acessar Login Alunos</a>
+    </div>
+ 
+    <div class="footer">
+        © 2025 <span>TECHFLOW</span> - CENTRAL DE SUPORTE
+    </div>
+</div>
+
+<script src="logintecnico.js"></script>
+</body>
+</html>

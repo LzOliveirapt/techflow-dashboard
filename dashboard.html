@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechFlow | Dashboard Técnico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">TECHFLOW</div>
+        
+        <nav class="nav" id="navMenu">
+            <button data-page="dashboard" class="active">📊 Dashboard</button>
+            <button data-page="tickets">🎫 Tickets</button>
+            <button data-page="mensagens">💬 Mensagens</button>
+            <button data-page="inventario">💻 Inventário</button>
+            <button data-page="relatorios">📈 Relatórios</button>
+            <button data-page="config" style="margin-top: 20px;">⚙️ Config</button>
+        </nav>
+
+        <div class="server-status">
+            <p class="status-label">Status do Sistema</p>
+            <p class="status-value">● Conectado</p>
+        </div>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <div class="content">
+        <header class="header">
+            <div class="header-left">
+                <h2 id="viewTitle">Dashboard</h2>
+                <input type="text" id="searchGlobal" placeholder="Pesquisar...">
+            </div>
+            <button id="btnLogout" class="btn btn-logout">Sair</button>
+        </header>
+
+        <main class="main-view">
+            <!-- DASHBOARD PAGE -->
+            <section id="page-dashboard" class="page">
+                <div class="welcome-header">
+                    <h2 id="greetingText">Olá, Técnico! 👋</h2>
+                    <p id="dateText">Carregando data...</p>
+                </div>
+
+                <div class="productivity-section">
+                    <div class="prod-header">
+                        <span>Taxa de Resolução de Chamados</span>
+                        <span id="resolutionRateText" class="rate-text">0%</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div id="resolutionProgressBar" class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card warning">
+                        <h3>Chamados Pendentes</h3>
+                        <div id="countOpen" class="num">0</div>
+                    </div>
+                    <div class="stat-card info">
+                        <h3>Em Atendimento</h3>
+                        <div id="countPending" class="num">0</div>
+                    </div>
+                    <div class="stat-card success">
+                        <h3>Resolvidos</h3>
+                        <div id="countClosed" class="num">0</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <h3>Total de Alunos</h3>
+                        <div id="countStudents" class="num">0</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-bottom">
+                    <div class="glass-panel">
+                        <h3>Status dos Chamados</h3>
+                        <div class="chart-container">
+                            <canvas id="ticketChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel">
+                        <h3>Atividades Recentes</h3>
+                        <div id="recentActivityList">
+                            <p style="text-align: center; color: #8b949e;">Nenhuma atividade</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TICKETS PAGE -->
+            <section id="page-tickets" class="page hide">
+                <div class="page-header-actions">
+                    <div class="filters">
+                        <select id="filterStatus" onchange="renderTicketsList()">
+                            <option value="all">Todos Status</option>
+                            <option value="Pendente">Pendente</option>
+                            <option value="Em Andamento">Em Andamento</option>
+                            <option value="Resolvido">Resolvido</option>
+                        </select>
+                        <select id="filterPriority" onchange="renderTicketsList()">
+                            <option value="all">Todas Prioridades</option>
+                            <option value="Crítica">Apenas Crítica</option>
+                            <option value="Alta">Apenas Alta</option>
+                            <option value="Média">Apenas Média</option>
+                            <option value="Baixa">Apenas Baixa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>Assunto</th>
+                                <th>Categoria</th>
+                                <th style="cursor: pointer;" onclick="sortTickets('priority')">Prioridade ↕️</th>
+                                <th style="cursor: pointer;" onclick="sortTickets('status')">Status ↕️</th>
+                                <th>Técnico</th>
+                                <th style="cursor: pointer;" onclick="sortTickets('date')">Data ↕️</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketList">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- MENSAGENS PAGE -->
+            <section id="page-mensagens" class="page hide">
+                <div class="chat-container">
+                    <aside class="chat-sidebar">
+                        <h3>Tickets</h3>
+                        <div id="ticketChatList" class="ticket-chat-list">
+                        </div>
+                    </aside>
+
+                    <div class="chat-main">
+                        <div id="chatEmpty" class="chat-empty">
+                            <p>🗨️ Selecione um ticket para iniciar a conversa</p>
+                        </div>
+
+                        <div id="chatBox" class="chat-box hide">
+                            <div class="chat-header">
+                                <div class="chat-info">
+                                    <h3 id="chatTitle">Ticket</h3>
+                                    <span id="chatStatus" class="chat-status">Pendente</span>
+                                </div>
+                                <div class="chat-actions">
+                                    <button id="btnAcceptTicket" class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">
+                                        ✓ Aceitar Ticket
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="chat-content-wrapper">
+                                <div class="chat-messages-area">
+                                    <div id="messagesContainer" class="messages-container">
+                                    </div>
+                                    <div class="chat-input-area">
+                                        <input 
+                                            id="messageInput" 
+                                            type="text" 
+                                            placeholder="Escreva uma mensagem..."
+                                            maxlength="500">
+                                        <button id="btnSendMessage" class="btn btn-primary" style="padding: 10px 20px; width: auto;">
+                                            <span class="btn-text">Enviar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Painel de Informações do Equipamento do Aluno -->
+                                <div id="deviceInfoPanel" class="device-info-panel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INVENTÁRIO PAGE -->
+            <section id="page-inventario" class="page hide">
+                <div class="page-header-actions">
+                    <button class="btn btn-primary" onclick="toggleInventoryForm()">+ Adicionar Aluno/Equip.</button>
+                </div>
+
+                <div id="invFormPanel" class="glass-panel" style="display: none; margin-bottom: 20px;">
+                    <h3>Registrar Inventário</h3>
+                    <div class="form-grid">
+                        <input type="text" id="invName" placeholder="Nome do Aluno" required>
+                        <input type="text" id="invStudentId" placeholder="ID do Aluno" required>
+                        <input type="text" id="invSerial" placeholder="Número de Série (S/N)" required>
+                        <input type="text" id="invClass" placeholder="Turma" required>
+                        
+                        <select id="invStatus" required onchange="toggleReturnDate()">
+                            <option value="">Status Físico</option>
+                            <option value="Com o Aluno">Com o Aluno</option>
+                            <option value="Na TI (Manutenção)">Na TI (Manutenção)</option>
+                            <option value="Disponível (Estoque)">Disponível (Estoque)</option>
+                            <option value="Extraviado/Roubado">Extraviado/Roubado</option>
+                        </select>
+                        
+                        <div id="returnDateContainer" style="display: none;">
+                            <label style="color: #94a3b8; font-size: 0.75rem; display: block; margin-bottom: 5px;">Previsão de Devolução</label>
+                            <input type="date" id="invReturnDate">
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="saveStudent()">Salvar</button>
+                        <button class="btn" style="background: rgba(255,255,255,0.1);" onclick="toggleInventoryForm(true)">Cancelar</button>
+                    </div>
+                </div>
+
+                <div id="invList" class="inventory-grid">
+                </div>
+            </section>
+
+            <!-- RELATÓRIOS PAGE -->
+            <section id="page-relatorios" class="page hide">
+                <div class="glass-panel">
+                    <h3>Relatórios</h3>
+                    <p style="text-align: center; color: #94a3b8;">Seção em desenvolvimento...</p>
+                </div>
+            </section>
+
+            <!-- CONFIG PAGE -->
+            <section id="page-config" class="page hide">
+                <div class="glass-panel" style="max-width: 600px;">
+                    <h3>Gerenciamento de Dados (Backup)</h3>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">
+                        Como o sistema funciona offline no seu navegador, é importante fazer backups regulares. Exporte seus dados para não perdê-los se limpar o cache do navegador.
+                    </p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <button class="btn btn-primary" onclick="exportData()" style="width: 100%;">
+                            💾 Fazer Backup (Exportar Dados)
+                        </button>
+                        
+                        <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
+                        
+                        <div>
+                            <label style="color: #f8fafc; font-size: 0.9rem; display: block; margin-bottom: 8px;">Restaurar Backup (Importar .json)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="file" id="importFile" accept=".json" style="flex: 1; padding: 8px;">
+                                <button class="btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" onclick="importData()">
+                                    🔄 Restaurar
+                                </button>
+                            </div>
+                            <p style="color: #ef4444; font-size: 0.75rem; margin-top: 5px;">⚠️ Atenção: Isso irá substituir todos os dados atuais do sistema.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODAL DE EDIÇÃO DE TICKET -->
+            <div id="editTicketModal" class="modal-overlay hide">
+                <div class="modal-content glass-panel">
+                    <h3>Atualizar Chamado</h3>
+                    <input type="hidden" id="editTicketId">
+                    
+                    <div class="form-grid" style="grid-template-columns: 1fr;">
+                        <div>
+                            <label style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 5px; display: block;">Status do Chamado</label>
+                            <select id="editTicketStatus">
+                                <option value="Pendente">Pendente</option>
+                                <option value="Em Andamento">Em Andamento</option>
+                                <option value="Resolvido">Resolvido</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 5px; display: block;">Nível de Prioridade</label>
+                            <select id="editTicketPriority">
+                                <option value="Baixa">Baixa (Pode esperar)</option>
+                                <option value="Média">Média (Padrão)</option>
+                                <option value="Alta">Alta (Urgente)</option>
+                                <option value="Crítica">Crítica (Para tudo!)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" style="flex: 1;" onclick="saveTicketEdit()">Salvar Alterações</button>
+                        <button class="btn" style="background: rgba(255,255,255,0.1); flex: 1;" onclick="closeEditTicketModal()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ÁREA INVISÍVEL: Usada exclusivamente para imprimir etiquetas -->
+<div id="printArea"></div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

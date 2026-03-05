@@ -1,0 +1,378 @@
+/* ========== RESET E CONFIGURAÇÃO GLOBAL ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ========== CORES E VARIÁVEIS ========== */
+:root {
+    --primary-color: #00c2ff;
+    --secondary-color: #007bff;
+    --error-color: #ff5c5c;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --bg-dark-1: #0d1b2a;
+    --bg-dark-2: #1b263b;
+    --bg-dark-3: #001219;
+    --text-primary: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.6);
+    --border-light: rgba(255, 255, 255, 0.1);
+}
+
+/* ========== BODY ========== */
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(-45deg, var(--bg-dark-1), var(--bg-dark-2), var(--bg-dark-3), #000000);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+/* ========== ANIMAÇÕES ========== */
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes fadeInEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========== LOGIN CONTAINER ========== */
+.login-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 50px 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeInEntrance 1s ease-out forwards;
+}
+
+.login-container h1 {
+    color: var(--primary-color);
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px rgba(0, 194, 255, 0.5);
+}
+
+/* ========== INPUT GROUP ========== */
+.input-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 45px 14px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input-group input::placeholder {
+    color: var(--text-muted);
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(0, 194, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.input-group input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* ========== PASSWORD TOGGLE ICON ========== */
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-group input:focus ~ .password-toggle {
+    color: var(--primary-color);
+}
+
+.password-toggle:hover {
+    color: var(--primary-color);
+}
+
+/* ========== BOTÃO LOGIN ========== */
+.btn-login {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-login:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 5px 20px rgba(0, 194, 255, 0.3);
+}
+
+.btn-login:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-login:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.btn-login.loading {
+    pointer-events: none;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: none;
+}
+
+.btn-login.loading .spinner {
+    display: inline-block;
+}
+
+.btn-login.loading .btn-text {
+    opacity: 0.7;
+}
+
+/* ========== MENSAGENS DE ERRO ========== */
+.error-msg {
+    color: var(--error-color);
+    background: rgba(255, 92, 92, 0.1);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: none;
+    font-size: 13px;
+    border: 1px solid rgba(255, 92, 92, 0.2);
+    animation: shake 0.5s ease-in-out;
+}
+
+.error-msg.show {
+    display: block;
+}
+
+/* ========== MENSAGENS DE SUCESSO ========== */
+.success-msg {
+    color: var(--success-color);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: none;
+    font-size: 13px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.success-msg.show {
+    display: block;
+    animation: fadeInEntrance 0.3s ease-out;
+}
+
+/* ========== LINKS E TEXTOS ========== */
+.switch-link {
+    margin-top: 25px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.switch-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.switch-link a:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 10px rgba(0, 194, 255, 0.5);
+}
+
+.footer {
+    margin-top: 30px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.footer span {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* ========== RESPONSIVIDADE ========== */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 40px 30px;
+        max-width: 90%;
+        margin: 20px;
+        border-radius: 16px;
+    }
+
+    .login-container h1 {
+        font-size: 28px;
+        margin-bottom: 25px;
+        letter-spacing: 2px;
+    }
+
+    .input-group input {
+        padding: 12px 40px 12px 16px;
+        font-size: 13px;
+    }
+
+    .btn-login {
+        padding: 12px 16px;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
+
+    .password-toggle {
+        right: 12px;
+        font-size: 1rem;
+    }
+
+    .error-msg,
+    .success-msg {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .switch-link {
+        font-size: 12px;
+    }
+
+    .footer {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-container {
+        padding: 30px 20px;
+    }
+
+    .login-container h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .input-group {
+        margin-bottom: 18px;
+    }
+
+    .input-group input {
+        padding: 10px 35px 10px 14px;
+        font-size: 12px;
+    }
+}
+
+/* ========== ACESSIBILIDADE ========== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========== MODO ESCURO (NATIVO) ========== */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(-45deg, var(--bg-dark-1), var(--bg-dark-2), var(--bg-dark-3), #000000);
+    }
+}

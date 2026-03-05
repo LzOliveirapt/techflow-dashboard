@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TechFlow - Login para Alunos. Acesse seu portal de suporte técnico.">
+    <meta name="theme-color" content="#28a7ff">
+    <title>TechFlow - Login Aluno</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="loginaluno.css">
+</head>
+<body class="login-page">
+
+    <main class="login-card">
+        <div class="brand">TECHFLOW</div>
+
+        <form id="studentLoginForm" class="login-form" novalidate>
+            
+            <div class="form-row">
+                <label for="studentName">Nome Completo *</label>
+                <input
+                    id="studentName"
+                    type="text"
+                    name="name"
+                    placeholder="Ex.: Luiz Cunha"
+                    required
+                    autocomplete="name"
+                    aria-label="Digite seu nome completo"
+                    aria-required="true">
+            </div>
+
+            <div class="form-row">
+                <label for="studentNumber">Número de Matrícula / ID *</label>
+                <input
+                    id="studentNumber"
+                    type="text"
+                    name="id"
+                    placeholder="Ex.: a416032"
+                    required
+                    autocomplete="username"
+                    aria-label="Digite seu número de matrícula"
+                    aria-required="true">
+            </div>
+
+            <div class="form-row">
+                <label for="studentClass">Sua Turma *</label>
+                <input
+                    id="studentClass"
+                    type="text"
+                    name="class"
+                    placeholder="Ex.: 4DP"
+                    required
+                    aria-label="Digite sua turma"
+                    aria-required="true">
+            </div>
+
+            <div id="studentLoginError" class="error-text hidden" role="alert" aria-live="polite"></div>
+            <div id="studentLoginSuccess" class="success-text hidden" role="status" aria-live="polite"></div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">
+                <span class="spinner"></span>
+                <span class="btn-text">ENTRAR</span>
+            </button>
+        </form>
+
+        <div class="form-footer">
+            <p>Faça login para acessar seu <span>Portal de Suporte</span></p>
+        </div>
+
+        <footer class="page-footer">
+            © 2025 TECHFLOW — CENTRAL DE SUPORTE
+        </footer>
+    </main>
+
+    <script src="loginaluno.js"></script>
+</body>
+</html>

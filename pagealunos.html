@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechFlow - Portal do Aluno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pagealunos.css">
+</head>
+<body>
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="brand">TECHFLOW</div>
+        <div class="header-right">
+            <span id="alunoInfo" class="aluno-info">Carregando...</span>
+            <div class="action-group">
+                <button id="btnChat" class="action-btn" title="Mensagens com técnico" style="display: none;">
+                    💬 <span class="action-text">Mensagens</span>
+                </button>
+                <button id="btnSettings" class="action-btn icon-only" title="Configurações">⚙️</button>
+                <button id="logoutStudent" class="action-btn">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container" id="mainContainer">
+
+        <!-- FORMULÁRIO -->
+        <section class="ticket-form-card">
+            <h2>Criar Novo Ticket</h2>
+
+            <!-- FOTO DA AVARIA -->
+            <div class="form-row">
+                <label>FOTO DA AVARIA (OPCIONAL)</label>
+                <div class="file-upload-wrapper">
+                    <label for="tPhoto" class="btn-file">Escolher ficheiro</label>
+                    <span id="fileName" class="file-name">Nenhum ficheiro selecionado</span>
+                    <input type="file" id="tPhoto" accept="image/png, image/jpeg, image/webp" hidden>
+                </div>
+                <small>Apenas arquivos de imagem (JPG, PNG, WEBP) - Máx 2MB</small>
+            </div>
+
+            <!-- PREVIEW DA FOTO -->
+            <div id="photoPreviewContainer" style="display: none; margin-bottom: 20px;">
+                <img id="detailPhoto" src="" alt="Preview" style="max-width: 100%; border-radius: 8px; border: 1px solid var(--accent-blue);">
+            </div>
+
+            <!-- DADOS DO ALUNO -->
+            <div class="form-row-group">
+                <div class="form-row">
+                    <label>NOME DO ALUNO *</label>
+                    <input id="fName" type="text" readonly>
+                </div>
+                <div class="form-row">
+                    <label>TURMA *</label>
+                    <input id="fClass" type="text" readonly>
+                </div>
+            </div>
+
+            <!-- EQUIPAMENTO -->
+            <div class="form-row">
+                <label>EQUIPAMENTO COM PROBLEMA *</label>
+                <select id="tEquipment" required>
+                    <option value="">Carregando inventário...</option>
+                </select>
+                <small>As máquinas abaixo estão registradas no seu nome pela TI.</small>
+            </div>
+
+            <!-- CATEGORIA -->
+            <div class="form-row">
+                <label>CATEGORIA DO PROBLEMA *</label>
+                <select id="tCategory" required>
+                    <option value="" disabled selected>-- Selecione uma categoria --</option>
+                    <option value="Hardware">Hardware (Rato, Teclado, Monitor, Não Liga)</option>
+                    <option value="Software">Software (Lento, Programas, Windows)</option>
+                    <option value="Internet">Internet/Rede (Sem Wi-Fi)</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+
+            <!-- IMPACTO -->
+            <div class="form-row">
+                <label>ESTE PROBLEMA IMPEDE VOCÊ DE ASSISTIR AULA/TRABALHAR? *</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="tImpact" value="Alta" required>
+                        <span>Sim, impede totalmente</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="tImpact" value="Média">
+                        <span>Não, mas atrapalha</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- TÍTULO -->
+            <div class="form-row">
+                <label>RESUMO DO PROBLEMA *</label>
+                <input id="tTitle" type="text" placeholder="Ex: O computador não liga" required>
+            </div>
+
+            <!-- DESCRIÇÃO -->
+            <div class="form-row">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <label style="margin: 0;">DESCRIÇÃO DETALHADA *</label>
+                    <small id="charCounter">0/300</small>
+                </div>
+                <textarea id="tDesc" maxlength="300" placeholder="Descreva o problema com detalhes e o que você já tentou fazer..." required></textarea>
+            </div>
+
+            <!-- BOTÃO SUBMIT -->
+            <div class="card-actions">
+                <button id="createStudentTicket" class="btn-primary" type="button">Enviar Ticket</button>
+            </div>
+        </section>
+
+        <!-- LISTA DE TICKETS -->
+        <section class="ticket-list-area">
+            <div style="margin-bottom: 25px;">
+                <h2 style="margin-bottom: 15px;">Meus Tickets</h2>
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="Todos">Todos</button>
+                    <button class="filter-btn" data-filter="Pendente">Pendentes</button>
+                    <button class="filter-btn" data-filter="Em Andamento">Em Análise</button>
+                    <button class="filter-btn" data-filter="Resolvido">Resolvidos</button>
+                </div>
+            </div>
+
+            <div id="studentTicketList" class="cards-grid">
+                <!-- Tickets renderizados aqui -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========== CHAT VIEW ========== -->
+    <div id="chatView" class="chat-view hide">
+        <div class="chat-container-student">
+            <aside class="chat-sidebar-student">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <button id="btnBackChat" class="btn-ghost">← Voltar</button>
+                    <h3 style="margin: 0; flex: 1; color: var(--text-primary);">💬 Chat da TI</h3>
+                </div>
+                <div id="ticketChatListStudent" class="ticket-chat-list-student"></div>
+            </aside>
+
+            <div class="chat-main-student">
+                <div id="chatEmptyStudent" class="chat-empty">
+                    <p>🗨️ Selecione um ticket na lateral para falar com a TI</p>
+                </div>
+
+                <div id="chatBoxStudent" class="chat-box hide">
+                    <div class="chat-header-student">
+                        <div class="chat-info-student">
+                            <div>
+                                <h3 id="chatTitleStudent" style="margin: 0; color: var(--text-primary);">Ticket</h3>
+                                <small id="chatStudentNameStudent" style="color: var(--text-secondary);">Aluno</small>
+                            </div>
+                            <span id="chatStatusStudent" class="status-dot">Pendente</span>
+                        </div>
+                        <div class="chat-tech-info">
+                            <div style="font-size: 12px; font-weight: 600; color: var(--accent-green); margin-bottom: 4px;">👨‍💻 Técnico Responsável</div>
+                            <span id="chatTechStudent" style="font-size: 12px; color: var(--text-secondary);">Aguardando...</span>
+                        </div>
+                    </div>
+
+                    <div id="messagesContainerStudent" class="messages-container-student"></div>
+
+                    <div class="chat-input-area-student">
+                        <input id="messageInputStudent" type="text" placeholder="Escreva sua mensagem..." maxlength="500">
+                        <button id="btnSendMessageStudent" class="btn-primary" style="width: auto;">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE DETALHES ========== -->
+    <div id="detailModal" class="modal hidden">
+        <div class="modal-box">
+            <button id="closeModal" class="modal-close">&times;</button>
+
+            <div class="modal-header">
+                <h3 id="detailTitle">Título do Ticket</h3>
+                <span id="detailCategoryBadge" style="color: var(--accent-blue); font-size: 12px; font-weight: 700; display: block; margin-top: 5px;"></span>
+            </div>
+
+            <div class="detail-content">
+                <label class="detail-label">Timeline do Conserto</label>
+                <div class="timeline" id="ticketTimeline"></div>
+
+                <div id="photoPreviewContainerModal" style="display: none; margin-top: 20px;">
+                    <label class="detail-label">Foto Anexada</label>
+                    <img id="detailPhotoModal" src="" alt="Foto" style="width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid var(--accent-blue);">
+                </div>
+
+                <label class="detail-label" style="margin-top: 20px;">O Problema reportado</label>
+                <p id="detailDesc" class="detail-desc"></p>
+            </div>
+
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <span class="detail-label">Equipamento</span>
+                    <span id="detailEquipment" class="meta-value" style="color: var(--text-primary);">---</span>
+                </div>
+                <div class="meta-item">
+                    <span class="detail-label">Status</span>
+                    <span id="detailStatus" class="status-dot"></span>
+                </div>
+                <div class="meta-item">
+                    <span class="detail-label">Impacto</span>
+                    <span id="detailPriority" class="status-dot"></span>
+                </div>
+                <div class="meta-item">
+                    <span class="detail-label">Técnico</span>
+                    <span id="detailTech" class="meta-value">Aguardando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE CONFIGURAÇÕES ========== -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-box" style="max-width: 450px;">
+            <button id="closeSettingsModal" class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3 style="color: var(--text-primary); margin: 0;">Configurações</h3>
+                <small style="color: var(--text-secondary);">Preferências do navegador.</small>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <label class="detail-label">Tema Visual</label>
+                <select id="themeSelect" style="margin-bottom: 20px;">
+                    <option value="dark">Noturno (Escuro)</option>
+                    <option value="light">Branco (Claro)</option>
+                </select>
+
+                <label class="detail-label">Dados locais</label>
+                <button id="btnClearLocal" class="btn-primary" style="background: var(--error-color); color: white;" type="button">Sair e Limpar Dados</button>
+                <small style="color: var(--text-secondary); margin-top: 8px;">Isso apaga seu histórico de sessão apenas neste navegador.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOASTS -->
+    <div id="toast-container"></div>
+    <script src="pagealunos.js"></script>
+</body>
+</html>
