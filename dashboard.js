@@ -894,3 +894,80 @@ function injectPresentationData() {
         window.location.reload();
     }, 1500);
 }
+// =====================================================================
+// 🚀 BOTÃO MÁGICO DE INJETAR DADOS PARA APRESENTAÇÃO (GERADO VIA JS)
+// =====================================================================
+(function criarBotaoMagico() {
+    // Cria o botão flutuante
+    const btn = document.createElement('button');
+    btn.innerHTML = '🚀 Criar Banco Teste';
+    btn.style.cssText = 'position: fixed; bottom: 20px; left: 20px; background: #8b5cf6; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; z-index: 99999; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); transition: 0.3s;';
+    
+    btn.onmouseover = () => btn.style.transform = 'scale(1.05)';
+    btn.onmouseout = () => btn.style.transform = 'scale(1)';
+
+    // Função que roda ao clicar
+    btn.onclick = function() {
+        if(!confirm("⚠️ Isso vai APAGAR os chamados atuais e criar um banco de dados cheio para sua apresentação. Confirma?")) return;
+
+        const hoje = new Date();
+        const ontem = new Date(hoje); ontem.setDate(ontem.getDate() - 1);
+        const anteontem = new Date(hoje); anteontem.setDate(anteontem.getDate() - 2);
+
+        // 1. INVENTÁRIO FAKE
+        const mockInventory = [
+            { id: "inv-1", name: "Luiz Cunha", studentId: "ALU-001", serial: "HP-7777", class: "4DP", status: "Com o Aluno" },
+            { id: "inv-2", name: "Maria Souza", studentId: "ALU-002", serial: "SAM-1122", class: "2B", status: "Na TI" },
+            { id: "inv-3", name: "João Silva", studentId: "ALU-003", serial: "DELL-9988", class: "3A", status: "Disponível" },
+            { id: "inv-4", name: "Ana Clara", studentId: "ALU-004", serial: "ACER-5544", class: "1C", status: "Com o Aluno" }
+        ];
+
+        // 2. TICKETS FAKE
+        const mockTickets = [
+            {
+                id: "tkt-test-1", student: "Luiz Cunha", class: "4DP", equipment: "S/N: HP-7777",
+                category: "Hardware", title: "O computador não liga de jeito nenhum", description: "Tentei ligar hoje de manhã e não dá sinal de vida.",
+                priority: "Alta", status: "Pendente", createdAt: hoje.toISOString(), assignedTech: null
+            },
+            {
+                id: "tkt-test-2", student: "Maria Souza", class: "2B", equipment: "S/N: SAM-1122",
+                category: "Software", title: "Tablet travando muito", description: "Ao abrir o Teams, o tablet congela e reinicia sozinho.",
+                priority: "Média", status: "Em Andamento", createdAt: ontem.toISOString(),
+                assignedTech: { id: "tech-1", name: "Técnico Principal" }
+            },
+            {
+                id: "tkt-test-3", student: "João Silva", class: "3A", equipment: "S/N: DELL-9988",
+                category: "Internet", title: "Sem acesso ao Wi-Fi", description: "A rede Edu_Wifi diz senha incorreta toda hora.",
+                priority: "Média", status: "Resolvido", createdAt: anteontem.toISOString(),
+                assignedTech: { id: "tech-1", name: "Técnico Principal" }
+            },
+            {
+                id: "tkt-test-4", student: "Ana Clara", class: "1C", equipment: "S/N: ACER-5544",
+                category: "Hardware", title: "Teclado com letras falhando", description: "As teclas A, S e D pararam de funcionar.",
+                priority: "Baixa", status: "Pendente", createdAt: hoje.toISOString(), assignedTech: null
+            }
+        ];
+
+        // 3. CHAT FAKE
+        const mockChats = {
+            "tkt-test-2": {
+                messages: [
+                    { id: "m1", author: "Maria Souza", type: "student", text: "Oi, deixei o tablet aí ontem, já tem previsão?", timestamp: ontem.toISOString() },
+                    { id: "m2", author: "Técnico Principal", type: "tech", text: "Olá Maria! Estou terminando de formatar ele agora.", timestamp: hoje.toISOString() },
+                    { id: "m3", author: "Técnico Principal", type: "tech", text: "Pode passar no intervalo para retirar.", timestamp: hoje.toISOString() }
+                ]
+            }
+        };
+
+        // INJETA FORÇADAMENTE NO NAVEGADOR
+        localStorage.setItem('techflow_inventory_v1', JSON.stringify(mockInventory));
+        localStorage.setItem('techflow_tickets_v1', JSON.stringify(mockTickets));
+        localStorage.setItem('techflow_chat_v1', JSON.stringify(mockChats));
+
+        alert("✅ Banco de Dados de Teste criado com sucesso! A página vai recarregar.");
+        window.location.reload();
+    };
+
+    // Adiciona o botão na tela
+    document.body.appendChild(btn);
+})();
