@@ -419,30 +419,37 @@ function showToast(message, type) {
     setTimeout(() => toast.remove(), 3500);
 
 }
-// ========== ATUALIZAÇÃO EM TEMPO REAL (CROSS-TAB) ==========
-// Fica "espiando" se o técnico atualizou o status ou mandou mensagem
+// ========== ATUALIZAÇÃO EM TEMPO REAL (PORTAL DO ALUNO) ==========
 window.addEventListener('storage', (e) => {
     
-    // Se o técnico atualizou o status do ticket do aluno
+    // 1. Se a TI atualizou o status ou aceitou o ticket
     if (e.key === CONFIG.STORAGE_TICKETS) {
-        renderTickets(); // Atualiza a lista e as cores de status na hora
-        checkChatAccess(); // Se o técnico aceitou, libera o botão de chat na hora
+        renderTickets(); // Atualiza os cards e as cores na hora
+        checkChatAccess(); // Libera o botão de chat (caso tenha sido aceito)
+        
+        // Se o chat já estiver aberto, atualiza o cabeçalho (Status e Nome do Técnico)
+        if (selectedChatTicketId) {
+            const chatsObj = JSON.parse(localStorage.getItem(CONFIG.STORAGE_CHAT) || '{}');
+            selectTicketChat(selectedChatTicketId, chatsObj);
+        } else {
+            showToast('🔄 A TI atualizou o status do seu chamado!', 'success');
+        }
     }
     
-    // Se o técnico mandou uma mensagem no chat
+    // 2. Se a TI mandou uma mensagem no chat
     if (e.key === CONFIG.STORAGE_CHAT) {
-        const chatViewOpen = !document.getElementById('chatView').classList.contains('hide');
+        const isChatOpen = !document.getElementById('chatView').classList.contains('hide');
+        const chatsObj = JSON.parse(localStorage.getItem(CONFIG.STORAGE_CHAT) || '{}');
         
-        // Se o aluno estiver com o chat aberto, a mensagem aparece pipocando na tela
-        if (chatViewOpen) {
-            renderChatTicketList();
+        if (isChatOpen) {
+            renderChatTicketList(); // Atualiza a lista lateral do chat
             if (selectedChatTicketId) {
-                const chatsObj = JSON.parse(localStorage.getItem(CONFIG.STORAGE_CHAT) || '{}');
                 renderChatMessages(chatsObj[selectedChatTicketId]?.messages || []);
             }
         } else {
-            // Se ele estiver fora do chat, avisa que chegou mensagem
-            showToast('💬 Nova mensagem da TI!', 'success');
+            // Se o aluno não estiver com o chat aberto, sobe o balão flutuante
+            showToast('💬 Você recebeu uma nova mensagem da TI!', 'success');
         }
     }
 });
+
