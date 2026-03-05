@@ -789,39 +789,32 @@ if (document.readyState === 'loading') {
     initApp();
 
 }
-// ========== ATUALIZAÇÃO EM TEMPO REAL (CROSS-TAB) ==========
-// Fica "espiando" se o aluno criou ticket ou mandou mensagem em outra aba
+// ========== ATUALIZAÇÃO EM TEMPO REAL (DASHBOARD DA TI) ==========
 window.addEventListener('storage', (e) => {
-    // Se a alteração for nos tickets, inventário ou chat
+    
     if (e.key === CONFIG.STORAGE_TICKETS || e.key === CONFIG.STORAGE_INVENTORY || e.key === CONFIG.STORAGE_CHAT) {
         
-        // Puxa os dados novos
-        loadData(); 
+        loadData(); // Puxa os dados atualizados do banco
         
-        // Descobre qual tela o técnico está olhando agora
-        const activePage = document.querySelector('.page:not(.hide)')?.id;
+        // Descobre qual aba o técnico está olhando agora
+        let activePage = 'page-dashboard';
+        const pageEl = document.querySelector('.page:not(.hide)');
+        if(pageEl) activePage = pageEl.id;
         
-        // Se mudaram os tickets
+        // Atualiza a tela de acordo com o que o técnico está visualizando
         if (e.key === CONFIG.STORAGE_TICKETS) {
             if (activePage === 'page-dashboard') renderDashboard();
             if (activePage === 'page-tickets') renderTicketsList();
-            showToast('🔔 Novo chamado ou atualização recebida!', 'info');
+            showToast('🔔 Novo chamado aberto por um aluno!', 'info');
         }
         
-        // Se mudou o inventário
         if (e.key === CONFIG.STORAGE_INVENTORY && activePage === 'page-inventario') {
             renderInventoryList();
         }
         
-        // Se recebeu mensagem no chat
         if (e.key === CONFIG.STORAGE_CHAT && activePage === 'page-mensagens') {
             renderTicketChatList();
             if (selectedTicketId) showTicketChat(selectedTicketId);
         }
     }
 });
-
-
-
-
-
