@@ -417,4 +417,32 @@ function showToast(message, type) {
     toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> <span>${message}</span>`;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
+
 }
+// ========== ATUALIZAÇÃO EM TEMPO REAL (CROSS-TAB) ==========
+// Fica "espiando" se o técnico atualizou o status ou mandou mensagem
+window.addEventListener('storage', (e) => {
+    
+    // Se o técnico atualizou o status do ticket do aluno
+    if (e.key === CONFIG.STORAGE_TICKETS) {
+        renderTickets(); // Atualiza a lista e as cores de status na hora
+        checkChatAccess(); // Se o técnico aceitou, libera o botão de chat na hora
+    }
+    
+    // Se o técnico mandou uma mensagem no chat
+    if (e.key === CONFIG.STORAGE_CHAT) {
+        const chatViewOpen = !document.getElementById('chatView').classList.contains('hide');
+        
+        // Se o aluno estiver com o chat aberto, a mensagem aparece pipocando na tela
+        if (chatViewOpen) {
+            renderChatTicketList();
+            if (selectedChatTicketId) {
+                const chatsObj = JSON.parse(localStorage.getItem(CONFIG.STORAGE_CHAT) || '{}');
+                renderChatMessages(chatsObj[selectedChatTicketId]?.messages || []);
+            }
+        } else {
+            // Se ele estiver fora do chat, avisa que chegou mensagem
+            showToast('💬 Nova mensagem da TI!', 'success');
+        }
+    }
+});
