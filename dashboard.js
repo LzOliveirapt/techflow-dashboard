@@ -787,4 +787,41 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
     initApp();
+
 }
+// ========== ATUALIZAÇÃO EM TEMPO REAL (CROSS-TAB) ==========
+// Fica "espiando" se o aluno criou ticket ou mandou mensagem em outra aba
+window.addEventListener('storage', (e) => {
+    // Se a alteração for nos tickets, inventário ou chat
+    if (e.key === CONFIG.STORAGE_TICKETS || e.key === CONFIG.STORAGE_INVENTORY || e.key === CONFIG.STORAGE_CHAT) {
+        
+        // Puxa os dados novos
+        loadData(); 
+        
+        // Descobre qual tela o técnico está olhando agora
+        const activePage = document.querySelector('.page:not(.hide)')?.id;
+        
+        // Se mudaram os tickets
+        if (e.key === CONFIG.STORAGE_TICKETS) {
+            if (activePage === 'page-dashboard') renderDashboard();
+            if (activePage === 'page-tickets') renderTicketsList();
+            showToast('🔔 Novo chamado ou atualização recebida!', 'info');
+        }
+        
+        // Se mudou o inventário
+        if (e.key === CONFIG.STORAGE_INVENTORY && activePage === 'page-inventario') {
+            renderInventoryList();
+        }
+        
+        // Se recebeu mensagem no chat
+        if (e.key === CONFIG.STORAGE_CHAT && activePage === 'page-mensagens') {
+            renderTicketChatList();
+            if (selectedTicketId) showTicketChat(selectedTicketId);
+        }
+    }
+});
+
+
+
+
+
