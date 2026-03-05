@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechFlow - Início</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { 
+            background-color: #080c14; 
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 229, 255, 0.1), transparent 50%);
+        }
+        .container { text-align: center; max-width: 800px; padding: 20px; }
+        .logo { font-size: 3rem; font-weight: 900; color: #00e5ff; letter-spacing: 3px; margin-bottom: 10px; }
+        .subtitle { color: #8b949e; font-size: 1.1rem; margin-bottom: 50px; }
+        .cards { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+        .card {
+            background: #0d131f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 40px;
+            width: 280px;
+            text-decoration: none;
+            color: #f8fafc;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .card:hover {
+            border-color: #00e5ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15);
+        }
+        .icon { font-size: 3rem; }
+        .card h2 { font-size: 1.5rem; color: #00e5ff; }
+        .card p { font-size: 0.9rem; color: #8b949e; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="logo">TECHFLOW</h1>
+        <p class="subtitle">Portal Central de Suporte e Atendimento Técnico</p>
+
+        <div class="cards">
+            <!-- Botão para a página de Login do Aluno -->
+            <a href="loginaluno.html" class="card">
+                <span class="icon">🎓</span>
+                <h2>Sou Aluno</h2>
+                <p>Abra chamados, relate problemas nos equipamentos e acompanhe o conserto.</p>
+            </a>
+
+            <!-- Botão para a página de Login do Técnico -->
+            <a href="logintecnico.html" class="card">
+                <span class="icon">💻</span>
+                <h2>Sou Técnico</h2>
+                <p>Acesse o dashboard, gerencie o inventário e responda aos tickets.</p>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
