@@ -818,3 +818,79 @@ window.addEventListener('storage', (e) => {
         }
     }
 });
+// ========== INJETAR DADOS PARA APRESENTAÇÃO ==========
+function injectPresentationData() {
+    if(!confirm("⚠️ ATENÇÃO: Isso vai apagar seus dados atuais e carregar um banco de dados fictício. Tem certeza?")) {
+        return;
+    }
+
+    const hoje = new Date();
+    const ontem = new Date(hoje); ontem.setDate(ontem.getDate() - 1);
+    const anteontem = new Date(hoje); anteontem.setDate(anteontem.getDate() - 2);
+
+    const techAtual = JSON.parse(localStorage.getItem(CONFIG.STORAGE_TECH)) || { id: "tech-1", name: "Técnico Admin" };
+
+    // 1. INVENTÁRIO FAKE
+    const mockInventory = [
+        { id: "inv-1", name: "Luiz Cunha", studentId: "ALU-001", serial: "HP-7777", class: "4DP", status: "Com o Aluno" },
+        { id: "inv-2", name: "Maria Souza", studentId: "ALU-002", serial: "SAM-1122", class: "2B", status: "Na TI (Manutenção)", returnDate: hoje.toISOString().split('T')[0] },
+        { id: "inv-3", name: "João Silva", studentId: "ALU-003", serial: "DELL-9988", class: "3A", status: "Disponível (Estoque)" },
+        { id: "inv-4", name: "Ana Clara", studentId: "ALU-004", serial: "ACER-5544", class: "1C", status: "Com o Aluno" },
+        { id: "inv-5", name: "Pedro Costa", studentId: "ALU-005", serial: "MAC-3322", class: "3A", status: "Com o Aluno" }
+    ];
+
+    // 2. TICKETS FAKE
+    const mockTickets = [
+        {
+            id: "tkt-1", student: "Luiz Cunha", class: "4DP", equipment: "S/N: HP-7777",
+            category: "Hardware", title: "O computador não liga", description: "Tentei ligar hoje de manhã e não dá sinal de vida.",
+            priority: "Alta", status: "Pendente", createdAt: hoje.toISOString(), assignedTech: null
+        },
+        {
+            id: "tkt-2", student: "Maria Souza", class: "2B", equipment: "S/N: SAM-1122",
+            category: "Software", title: "Tablet travando muito", description: "Ao abrir o Teams, o tablet congela e reinicia.",
+            priority: "Média", status: "Em Andamento", createdAt: ontem.toISOString(),
+            assignedTech: { id: techAtual.id, name: techAtual.name }
+        },
+        {
+            id: "tkt-3", student: "João Silva", class: "3A", equipment: "S/N: DELL-9988",
+            category: "Internet", title: "Sem acesso ao Wi-Fi", description: "A rede Edu_Wifi diz senha incorreta.",
+            priority: "Média", status: "Resolvido", createdAt: anteontem.toISOString(),
+            assignedTech: { id: techAtual.id, name: techAtual.name }
+        },
+        {
+            id: "tkt-4", student: "Ana Clara", class: "1C", equipment: "S/N: ACER-5544",
+            category: "Hardware", title: "Teclado com letras falhando", description: "As teclas A, S e D não funcionam.",
+            priority: "Baixa", status: "Pendente", createdAt: hoje.toISOString(), assignedTech: null
+        }
+    ];
+
+    // 3. CHAT FAKE
+    const mockChats = {
+        "tkt-2": {
+            messages: [
+                { id: "msg-1", author: "Maria Souza", type: "student", text: "Oi, deixei o tablet aí ontem, já tem previsão?", timestamp: ontem.toISOString() },
+                { id: "msg-2", author: techAtual.name, type: "tech", text: "Olá Maria! Estou terminando de formatar ele agora.", timestamp: hoje.toISOString() },
+                { id: "msg-3", author: techAtual.name, type: "tech", text: "Pode passar no intervalo para retirar.", timestamp: hoje.toISOString() }
+            ]
+        },
+        "tkt-3": {
+            messages: [
+                { id: "msg-4", author: techAtual.name, type: "tech", text: "João, resetei sua senha. Tenta logar de novo.", timestamp: anteontem.toISOString() },
+                { id: "msg-5", author: "João Silva", type: "student", text: "Deu certo! Muito obrigado.", timestamp: anteontem.toISOString() }
+            ]
+        }
+    };
+
+    // INJETAR NO LOCALSTORAGE
+    localStorage.setItem(CONFIG.STORAGE_INVENTORY, JSON.stringify(mockInventory));
+    localStorage.setItem(CONFIG.STORAGE_TICKETS, JSON.stringify(mockTickets));
+    localStorage.setItem(CONFIG.STORAGE_CHAT, JSON.stringify(mockChats));
+
+    showToast("🚀 Banco de dados injetado com sucesso!", "success");
+    
+    // Recarregar a página para aplicar
+    setTimeout(() => {
+        window.location.reload();
+    }, 1500);
+}
