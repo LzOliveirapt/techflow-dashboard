@@ -251,6 +251,38 @@
                                 <input type="file" id="importFile" accept=".json" style="flex: 1; padding: 8px;">
                                 <button class="btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" onclick="importData()">
                                     🔄 Restaurar
+                                <section id="page-config" class="page hide">
+                                    <div class="glass-panel" style="max-width: 600px;">
+                                        <h3>Gerenciamento de Dados (Backup)</h3>
+                                        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">
+            Como o sistema funciona offline no seu navegador, é importante fazer backups regulares. </p>
+                                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                                            <button class="btn btn-primary" onclick="exportData()" style="width: 100%;">
+                💾 Fazer Backup (Exportar Dados) </button>
+                                            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
+                                            <div>
+                <label style="color: #f8fafc; font-size: 0.9rem; display: block; margin-bottom: 8px;">Restaurar Backup (Importar .json)</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="file" id="importFile" accept=".json" style="flex: 1; padding: 8px;">
+                    <button class="btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" onclick="importData()">
+                        🔄 Restaurar
+                    </button>
+                </div>
+            </div>
+
+            <!-- NOVO BOTÃO PARA APRESENTAÇÃO -->
+            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
+            <div>
+                <label style="color: #f8fafc; font-size: 0.9rem; display: block; margin-bottom: 8px;">Área de Testes / Apresentação</label>
+                <button class="btn" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; width: 100%; border: 1px solid rgba(139, 92, 246, 0.4);" onclick="injectPresentationData()">
+                    🚀 Injetar Dados de Teste (Para Apresentação)
+                </button>
+                <p style="color: #94a3b8; font-size: 0.75rem; margin-top: 5px;">Aviso: Isso apagará os dados atuais e preencherá o sistema com dados fictícios para demonstração.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
                                 </button>
                             </div>
                             <p style="color: #ef4444; font-size: 0.75rem; margin-top: 5px;">⚠️ Atenção: Isso irá substituir todos os dados atuais do sistema.</p>
@@ -302,3 +334,4 @@
 <script src="dashboard.js"></script>
 </body>
 </html>
+
