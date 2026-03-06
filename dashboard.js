@@ -789,10 +789,35 @@ if (document.readyState === 'loading') {
     initApp();
 
 }
-// ========== ATUALIZAÇÃO EM TEMPO REAL (DASHBOARD DA TI) ==========
+// ========== EFEITO SONORO (DING!) ==========
+function playNotificationSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        // Configura o som para ser um "Ding" suave e agradável
+        osc.type = 'sine'; 
+        osc.frequency.setValueAtTime(880, ctx.currentTime); // Tom alto
+        osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1); // Cai rápido
+
+        gainNode.gain.setValueAtTime(0.3, ctx.currentTime); // Volume em 30%
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5); // Fade out
+
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+    } catch (e) {
+        console.log("Áudio bloqueado pelo navegador");
+    }
+}
+
+// ========== ATUALIZAÇÃO EM TEMPO REAL E NOTIFICAÇÃO (DASHBOARD) ==========
 window.addEventListener('storage', (e) => {
     
-    if (e.key === CONFIG.STORAGE_TICKETS || e.key === CONFIG.STORAGE_INVENTORY || e.key === CONFIG.STORAGE_CHAT) {
+    if (e.key === 'techflow_tickets_v1' || e.key === 'techflow_inventory_v1' || e.key === 'techflow_chat_v1') {
         
         loadData(); // Puxa os dados atualizados do banco
         
@@ -801,20 +826,31 @@ window.addEventListener('storage', (e) => {
         const pageEl = document.querySelector('.page:not(.hide)');
         if(pageEl) activePage = pageEl.id;
         
-        // Atualiza a tela de acordo com o que o técnico está visualizando
-        if (e.key === CONFIG.STORAGE_TICKETS) {
+        // Se entrou um ticket novo
+        if (e.key === 'techflow_tickets_v1') {
             if (activePage === 'page-dashboard') renderDashboard();
             if (activePage === 'page-tickets') renderTicketsList();
+            
             showToast('🔔 Novo chamado aberto por um aluno!', 'info');
+            playNotificationSound(); // TOCA O SOM!
         }
         
-        if (e.key === CONFIG.STORAGE_INVENTORY && activePage === 'page-inventario') {
+        // Se o inventário mudou
+        if (e.key === 'techflow_inventory_v1' && activePage === 'page-inventario') {
             renderInventoryList();
         }
         
-        if (e.key === CONFIG.STORAGE_CHAT && activePage === 'page-mensagens') {
-            renderTicketChatList();
-            if (selectedTicketId) showTicketChat(selectedTicketId);
+        // Se chegou mensagem no chat
+        if (e.key === 'techflow_chat_v1') {
+            if (activePage === 'page-mensagens') {
+                renderTicketChatList();
+                if (typeof selectedTicketId !== 'undefined' && selectedTicketId) {
+                    showTicketChat(selectedTicketId);
+                }
+            } else {
+                showToast('💬 Nova mensagem de um aluno!', 'info');
+            }
+            playNotificationSound(); // TOCA O SOM!
         }
     }
 });
@@ -971,3 +1007,4 @@ function injectPresentationData() {
     // Adiciona o botão na tela
     document.body.appendChild(btn);
 })();
+
