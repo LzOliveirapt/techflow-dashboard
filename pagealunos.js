@@ -419,37 +419,62 @@ function showToast(message, type) {
     setTimeout(() => toast.remove(), 3500);
 
 }
-// ========== ATUALIZAÇÃO EM TEMPO REAL (PORTAL DO ALUNO) ==========
+// ========== EFEITO SONORO (DING!) ==========
+function playNotificationSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        // Configura o som para ser um "Ding" suave e agradável
+        osc.type = 'sine'; 
+        osc.frequency.setValueAtTime(880, ctx.currentTime); 
+        osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1); 
+
+        gainNode.gain.setValueAtTime(0.3, ctx.currentTime); 
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5); 
+
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+    } catch (e) {
+        console.log("Áudio bloqueado pelo navegador");
+    }
+}
+
+// ========== ATUALIZAÇÃO EM TEMPO REAL E NOTIFICAÇÃO (ALUNO) ==========
 window.addEventListener('storage', (e) => {
     
     // 1. Se a TI atualizou o status ou aceitou o ticket
-    if (e.key === CONFIG.STORAGE_TICKETS) {
+    if (e.key === 'techflow_tickets_v1') {
         renderTickets(); // Atualiza os cards e as cores na hora
         checkChatAccess(); // Libera o botão de chat (caso tenha sido aceito)
         
-        // Se o chat já estiver aberto, atualiza o cabeçalho (Status e Nome do Técnico)
-        if (selectedChatTicketId) {
-            const chatsObj = JSON.parse(localStorage.getItem(CONFIG.STORAGE_CHAT) || '{}');
+        // Se o chat já estiver aberto, atualiza o cabeçalho
+        if (typeof selectedChatTicketId !== 'undefined' && selectedChatTicketId) {
+            const chatsObj = JSON.parse(localStorage.getItem('techflow_chat_v1') || '{}');
             selectTicketChat(selectedChatTicketId, chatsObj);
         } else {
             showToast('🔄 A TI atualizou o status do seu chamado!', 'success');
+            playNotificationSound(); // TOCA O SOM!
         }
     }
     
     // 2. Se a TI mandou uma mensagem no chat
-    if (e.key === CONFIG.STORAGE_CHAT) {
+    if (e.key === 'techflow_chat_v1') {
         const isChatOpen = !document.getElementById('chatView').classList.contains('hide');
-        const chatsObj = JSON.parse(localStorage.getItem(CONFIG.STORAGE_CHAT) || '{}');
+        const chatsObj = JSON.parse(localStorage.getItem('techflow_chat_v1') || '{}');
         
         if (isChatOpen) {
             renderChatTicketList(); // Atualiza a lista lateral do chat
-            if (selectedChatTicketId) {
+            if (typeof selectedChatTicketId !== 'undefined' && selectedChatTicketId) {
                 renderChatMessages(chatsObj[selectedChatTicketId]?.messages || []);
             }
         } else {
-            // Se o aluno não estiver com o chat aberto, sobe o balão flutuante
             showToast('💬 Você recebeu uma nova mensagem da TI!', 'success');
         }
+        playNotificationSound(); // TOCA O SOM!
     }
 });
-
