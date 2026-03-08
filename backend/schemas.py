@@ -130,5 +130,16 @@ class MessageDetailResponse(MessageResponse):
     sender: UserResponse
 
 
+# ---------------------------------------------------------------------------
+# Auth schemas
+# ---------------------------------------------------------------------------
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserResponse
+
+
 # Resolve forward references
 TicketDetailResponse.model_rebuild()
