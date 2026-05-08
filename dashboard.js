@@ -95,7 +95,51 @@ function setupEventListeners() {
         if (activePage === 'page-tickets') renderTicketsList();
         if (activePage === 'page-inventario') renderInventoryList();
     });
+
+    document.getElementById('filterStatus')?.addEventListener('change', renderTicketsList);
+    document.getElementById('filterPriority')?.addEventListener('change', renderTicketsList);
+    document.getElementById('sortPriority')?.addEventListener('click', () => sortTickets('priority'));
+    document.getElementById('sortStatus')?.addEventListener('click', () => sortTickets('status'));
+    document.getElementById('sortDate')?.addEventListener('click', () => sortTickets('date'));
+
+    document.getElementById('btnToggleInventoryForm')?.addEventListener('click', () => toggleInventoryForm());
+    document.getElementById('invStatus')?.addEventListener('change', toggleReturnDate);
+    document.getElementById('btnSaveStudent')?.addEventListener('click', saveStudent);
+    document.getElementById('btnCancelInventory')?.addEventListener('click', () => toggleInventoryForm(true));
+
+    document.getElementById('btnExportData')?.addEventListener('click', exportData);
+    document.getElementById('btnImportData')?.addEventListener('click', importData);
+    document.getElementById('btnInjectData')?.addEventListener('click', injectPresentationData);
+
+    document.getElementById('btnSaveTicketEdit')?.addEventListener('click', saveTicketEdit);
+    document.getElementById('btnCloseTicketEdit')?.addEventListener('click', closeEditTicketModal);
+
+    document.getElementById('ticketList')?.addEventListener('click', (event) => {
+        const button = event.target.closest('.ticket-edit-btn');
+        if (button) {
+            openEditTicketModal(button.dataset.ticketId);
+        }
+    });
+
+    document.getElementById('invList')?.addEventListener('click', (event) => {
+        const editButton = event.target.closest('.inventory-edit-btn');
+        const printButton = event.target.closest('.inventory-print-btn');
+        const deleteButton = event.target.closest('.inventory-delete-btn');
+
+        if (editButton) {
+            editStudent(editButton.dataset.inventoryId);
+            return;
+        }
+        if (printButton) {
+            printLabel(printButton.dataset.inventoryId);
+            return;
+        }
+        if (deleteButton) {
+            deleteStudent(deleteButton.dataset.inventoryId);
+        }
+    });
 }
+
 
 function handleNavigation(btn) {
     if (btn.id === 'toggleTheme') return;
@@ -287,7 +331,7 @@ function renderTicketsList() {
             <td>${t.assignedTech ? sanitizeText(t.assignedTech.name) : '—'}</td>
             <td>${new Date(t.createdAt).toLocaleDateString()}</td>
             <td>
-                <button class="btn" style="padding: 6px 12px; font-size: 0.8rem; background: var(--accent);" onclick="openEditTicketModal('${t.id}')">✏️ Atualizar</button>
+                <button class="btn ticket-edit-btn" data-ticket-id="${t.id}" style="padding: 6px 12px; font-size: 0.8rem; background: var(--accent);">✏️ Atualizar</button>
             </td>
         `;
         container.appendChild(tr);
@@ -616,9 +660,9 @@ function renderInventoryList() {
                 <p><span>S/N:</span> <strong>${item.serial}</strong></p>
             </div>
             <div class="inv-card-actions">
-                <button class="btn" onclick="editStudent('${item.id}')" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; flex: 1; padding: 8px; font-size:0.8rem;">Editar</button>
-                <button class="btn" onclick="printLabel('${item.id}')" style="background: rgba(255, 255, 255, 0.1); color: #f8fafc; flex: 1; padding: 8px; font-size:0.8rem;">🖨️ Etiqueta</button>
-                <button class="btn" onclick="deleteStudent('${item.id}')" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; flex: 1; padding: 8px; font-size:0.8rem;">Apagar</button>
+                <button class="btn inventory-edit-btn" data-inventory-id="${item.id}" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; flex: 1; padding: 8px; font-size:0.8rem;">Editar</button>
+                <button class="btn inventory-print-btn" data-inventory-id="${item.id}" style="background: rgba(255, 255, 255, 0.1); color: #f8fafc; flex: 1; padding: 8px; font-size:0.8rem;">🖨️ Etiqueta</button>
+                <button class="btn inventory-delete-btn" data-inventory-id="${item.id}" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; flex: 1; padding: 8px; font-size:0.8rem;">Apagar</button>
             </div>
         `;
         container.appendChild(div);
@@ -1007,4 +1051,3 @@ function injectPresentationData() {
     // Adiciona o botão na tela
     document.body.appendChild(btn);
 })();
-

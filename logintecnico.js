@@ -41,6 +41,8 @@ function initializeApp() {
 // ========== USUÁRIOS PADRÃO ==========
 function initializeUsers() {
     try {
+        if (localStorage.getItem(CONFIG.TECH_USERS_KEY)) return;
+
         const defaultUsers = [
             {
                 id: 'paulo',
@@ -165,7 +167,7 @@ function checkExistingSession() {
         if (currentTech) {
             const techData = JSON.parse(currentTech);
             console.log(`✓ Sessão ativa encontrada para: ${techData.name}`);
-            // Usuário já autenticado - poderia redirecionar automaticamente
+            window.location.href = CONFIG.PAINEL_URL;
         }
     } catch (error) {
         console.warn('Sessão inválida encontrada:', error);

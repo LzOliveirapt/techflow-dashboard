@@ -98,13 +98,13 @@
             <section id="page-tickets" class="page hide">
                 <div class="page-header-actions">
                     <div class="filters">
-                        <select id="filterStatus" onchange="renderTicketsList()">
+                        <select id="filterStatus">
                             <option value="all">Todos Status</option>
                             <option value="Pendente">Pendente</option>
                             <option value="Em Andamento">Em Andamento</option>
                             <option value="Resolvido">Resolvido</option>
                         </select>
-                        <select id="filterPriority" onchange="renderTicketsList()">
+                        <select id="filterPriority">
                             <option value="all">Todas Prioridades</option>
                             <option value="Crítica">Apenas Crítica</option>
                             <option value="Alta">Apenas Alta</option>
@@ -121,10 +121,10 @@
                                 <th>Aluno</th>
                                 <th>Assunto</th>
                                 <th>Categoria</th>
-                                <th style="cursor: pointer;" onclick="sortTickets('priority')">Prioridade ↕️</th>
-                                <th style="cursor: pointer;" onclick="sortTickets('status')">Status ↕️</th>
+                                <th id="sortPriority" style="cursor: pointer;">Prioridade ↕️</th>
+                                <th id="sortStatus" style="cursor: pointer;">Status ↕️</th>
                                 <th>Técnico</th>
-                                <th style="cursor: pointer;" onclick="sortTickets('date')">Data ↕️</th>
+                                <th id="sortDate" style="cursor: pointer;">Data ↕️</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -188,7 +188,7 @@
             <!-- INVENTÁRIO PAGE -->
             <section id="page-inventario" class="page hide">
                 <div class="page-header-actions">
-                    <button class="btn btn-primary" onclick="toggleInventoryForm()">+ Adicionar Aluno/Equip.</button>
+                    <button id="btnToggleInventoryForm" class="btn btn-primary">+ Adicionar Aluno/Equip.</button>
                 </div>
 
                 <div id="invFormPanel" class="glass-panel" style="display: none; margin-bottom: 20px;">
@@ -199,7 +199,7 @@
                         <input type="text" id="invSerial" placeholder="Número de Série (S/N)" required>
                         <input type="text" id="invClass" placeholder="Turma" required>
                         
-                        <select id="invStatus" required onchange="toggleReturnDate()">
+                        <select id="invStatus" required>
                             <option value="">Status Físico</option>
                             <option value="Com o Aluno">Com o Aluno</option>
                             <option value="Na TI (Manutenção)">Na TI (Manutenção)</option>
@@ -213,8 +213,8 @@
                         </div>
                     </div>
                     <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        <button class="btn btn-primary" onclick="saveStudent()">Salvar</button>
-                        <button class="btn" style="background: rgba(255,255,255,0.1);" onclick="toggleInventoryForm(true)">Cancelar</button>
+                        <button id="btnSaveStudent" class="btn btn-primary">Salvar</button>
+                        <button id="btnCancelInventory" class="btn" style="background: rgba(255,255,255,0.1);">Cancelar</button>
                     </div>
                 </div>
 
@@ -239,7 +239,7 @@
                     </p>
                     
                     <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <button class="btn btn-primary" onclick="exportData()" style="width: 100%;">
+                        <button id="btnExportData" class="btn btn-primary" style="width: 100%;">
                             💾 Fazer Backup (Exportar Dados)
                         </button>
                         
@@ -249,44 +249,22 @@
                             <label style="color: #f8fafc; font-size: 0.9rem; display: block; margin-bottom: 8px;">Restaurar Backup (Importar .json)</label>
                             <div style="display: flex; gap: 10px;">
                                 <input type="file" id="importFile" accept=".json" style="flex: 1; padding: 8px;">
-                                <button class="btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" onclick="importData()">
+                                <button id="btnImportData" class="btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">
                                     🔄 Restaurar
-                                <section id="page-config" class="page hide">
-                                    <div class="glass-panel" style="max-width: 600px;">
-                                        <h3>Gerenciamento de Dados (Backup)</h3>
-                                        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">
-            Como o sistema funciona offline no seu navegador, é importante fazer backups regulares. </p>
-                                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                                            <button class="btn btn-primary" onclick="exportData()" style="width: 100%;">
-                💾 Fazer Backup (Exportar Dados) </button>
-                                            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
-                                            <div>
-                <label style="color: #f8fafc; font-size: 0.9rem; display: block; margin-bottom: 8px;">Restaurar Backup (Importar .json)</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="file" id="importFile" accept=".json" style="flex: 1; padding: 8px;">
-                    <button class="btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" onclick="importData()">
-                        🔄 Restaurar
-                    </button>
-                </div>
-            </div>
-
-            <!-- NOVO BOTÃO PARA APRESENTAÇÃO -->
-            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
-            <div>
-                <label style="color: #f8fafc; font-size: 0.9rem; display: block; margin-bottom: 8px;">Área de Testes / Apresentação</label>
-                <button class="btn" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; width: 100%; border: 1px solid rgba(139, 92, 246, 0.4);" onclick="injectPresentationData()">
-                    🚀 Injetar Dados de Teste (Para Apresentação)
-                </button>
-                <p style="color: #94a3b8; font-size: 0.75rem; margin-top: 5px;">banco de dados teste.</p>
-            </div>
-
-        </div>
-    </div>
-</section>
                                 </button>
                             </div>
-                            <p style="color: #ef4444; font-size: 0.75rem; margin-top: 5px;">⚠️ Atenção: Isso irá substituir todos os dados atuais do sistema.</p>
                         </div>
+
+                        <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0;"></div>
+
+                        <div>
+                            <label style="color: #f8fafc; font-size: 0.9rem; display: block; margin-bottom: 8px;">Área de Testes / Apresentação</label>
+                            <button id="btnInjectData" class="btn" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; width: 100%; border: 1px solid rgba(139, 92, 246, 0.4);">
+                                🚀 Injetar Dados de Teste (Para Apresentação)
+                            </button>
+                            <p style="color: #94a3b8; font-size: 0.75rem; margin-top: 5px;">Banco de dados de apresentação.</p>
+                        </div>
+
                     </div>
                 </div>
             </section>
@@ -318,8 +296,8 @@
                     </div>
                     
                     <div style="margin-top: 20px; display: flex; gap: 10px;">
-                        <button class="btn btn-primary" style="flex: 1;" onclick="saveTicketEdit()">Salvar Alterações</button>
-                        <button class="btn" style="background: rgba(255,255,255,0.1); flex: 1;" onclick="closeEditTicketModal()">Cancelar</button>
+                        <button id="btnSaveTicketEdit" class="btn btn-primary" style="flex: 1;">Salvar Alterações</button>
+                        <button id="btnCloseTicketEdit" class="btn" style="background: rgba(255,255,255,0.1); flex: 1;">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -331,7 +309,7 @@
 <!-- ÁREA INVISÍVEL: Usada exclusivamente para imprimir etiquetas -->
 <div id="printArea"></div>
 
+<script src="dashboard-utils.js"></script>
 <script src="dashboard.js"></script>
 </body>
 </html>
-

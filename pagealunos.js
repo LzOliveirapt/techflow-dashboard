@@ -3,24 +3,40 @@ const CONFIG = {
     STORAGE_INVENTORY: 'techflow_inventory_v1',
     STORAGE_SESSION: 'currentAluno',
     STORAGE_CHAT: 'techflow_chat_v1',
-    STORAGE_THEME: 'techflow_theme' // NOVO: Guarda o tema
+    STORAGE_THEME: 'techflow_theme',
+    LOGIN_PAGE: 'loginaluno.html'
 };
 
-// SIMULAÇÃO DE LOGIN BÁSICA
-if (!localStorage.getItem(CONFIG.STORAGE_SESSION)) {
-    const mockStudent = { id: "ALU-001", name: "Luiz Cunha", turma: "4DP" };
-    localStorage.setItem(CONFIG.STORAGE_SESSION, JSON.stringify(mockStudent));
-}
-
-const currentUser = JSON.parse(localStorage.getItem(CONFIG.STORAGE_SESSION));
+let currentUser = null;
 let tempImageBase64 = null;
 let currentFilter = 'Todos';
 let selectedChatTicketId = null;
 
+function getStudentSession() {
+    try {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_SESSION));
+    } catch {
+        return null;
+    }
+}
+
+function ensureStudentSession() {
+    const session = getStudentSession();
+    if (!session || !session.id || !session.name || !session.turma) {
+        localStorage.removeItem(CONFIG.STORAGE_SESSION);
+        window.location.href = CONFIG.LOGIN_PAGE;
+        return null;
+    }
+    return session;
+}
+
 // INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
     initTheme(); // Aplica o tema salvo no navegador
-    
+
+    currentUser = ensureStudentSession();
+    if (!currentUser) return;
+
     document.getElementById('alunoInfo').textContent = `${currentUser.name} • ${currentUser.turma}`;
     document.getElementById('fName').value = currentUser.name;
     document.getElementById('fClass').value = currentUser.turma;
